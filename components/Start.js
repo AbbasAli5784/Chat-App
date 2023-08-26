@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 import { useState } from "react";
 
@@ -28,6 +29,9 @@ const Start = ({ navigation }) => {
           onChangeText={setName}
           placeholder="Type your username here"
         />
+        {Platform.OS === "ios" ? (
+          <KeyboardAvoidingView behavior="padding" />
+        ) : null}
 
         <Text>Please Select A Background Colour!</Text>
 
