@@ -2,41 +2,54 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
 import { KeyboardAvoidingView, Platform } from "react-native";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ db, route, navigation }) => {
   const [messages, setMessages] = useState([]);
   const { name } = route.params;
   const { backgroundColor } = route.params;
+  const { userId } = route.params;
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "",
-        },
-      },
-      {
-        _id: 2,
-        text: "This is a system message",
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
+    const messageRef = collection(db, "messages");
+    const q = query(messageRef, orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messagesFireStore = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          ...data,
+          _id: doc.id,
+          createdAt: data.createdAt.toDate(),
+        };
+      });
+      setMessages(messagesFireStore);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     navigation.setOptions({ title: name });
   }, []);
 
-  const onSend = (newMessages) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
+  const onSend = async (newMessages) => {
+    const newMessage = { ...newMessages[0], uid: userId };
+    try {
+      await addDoc(collection(db, "messages"), newMessage);
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, [newMessage])
+      );
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
   const renderBubble = (props) => {
@@ -62,7 +75,8 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={(messages) => onSend(messages)}
         user={{
-          _id: 1,
+          _id: userId,
+          name: name,
         }}
       />
       {Platform.OS === "android" ? (

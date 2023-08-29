@@ -5,16 +5,34 @@ import {
   Button,
   TextInput,
   ScrollView,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import ColorPicker from "react-native-wheel-color-picker";
 import { KeyboardAvoidingView, Platform } from "react-native";
-
+import { getAuth, signInAnonymously } from "firebase/auth";
 import { useState } from "react";
 
 const Start = ({ navigation }) => {
   const [name, setName] = useState("");
   const [color, setColor] = useState("");
+  const [userId, setUserId] = useState("");
+  const auth = getAuth();
 
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then((result) => {
+        navigation.navigate("Chat", {
+          name: name,
+          backgroundColor: color,
+          userId: result.user.uid,
+        });
+        Alert.alert("Signed in Successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try later.");
+      });
+  };
   const onColorChange = (color) => {
     setColor(color);
   };
@@ -45,13 +63,9 @@ const Start = ({ navigation }) => {
           row={false}
         />
 
-        <Button
-          style={styles.button}
-          title="Start Chatting!"
-          onPress={() =>
-            navigation.navigate("Chat", { name: name, backgroundColor: color })
-          }
-        />
+        <TouchableOpacity style={styles.button} onPress={signInUser}>
+          <Text style={styles.buttonText}>Start Chatting!</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -70,6 +84,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 15,
     marginBottom: 15,
+  },
+  button: {
+    marginTop: 50,
+    padding: 10,
+    backgroundColor: "#007BFF",
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
   },
 });
 
