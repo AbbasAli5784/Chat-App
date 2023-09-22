@@ -39,12 +39,12 @@ Navigate to the Project Directory:cd Chat-App
 Install Dependencies: npm install
 Start the App:expo start
 
-Usage
+## Usage
 Enter Your Name: Start by entering your name.
 Choose a Background Color: Select a background color for the chat interface.
 Join the Chat: Engage in real-time chat conversations with other users.
 
-Components
+## Components
 Chat: The main component responsible for rendering the chat interface and handling messages. View Code
 CustomActions: Handles custom actions like sharing images and location. View Code
 Start: The starting point where users enter their name and choose a background color for the chat interface. View Code
