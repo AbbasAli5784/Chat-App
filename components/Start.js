@@ -7,7 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from "react-native";
+
 import ColorPicker from "react-native-wheel-color-picker";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -38,36 +40,41 @@ const Start = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text>Please Enter A Username!</Text>
-        <TextInput
-          style={styles.textInput}
-          value={name}
-          onChangeText={setName}
-          placeholder="Type your username here"
-        />
-        {Platform.OS === "ios" ? (
-          <KeyboardAvoidingView behavior="padding" />
-        ) : null}
+    <ImageBackground
+      source={require("../")}
+      style={styles.backgroundImage}
+    >
+      <ScrollView>
+        <View style={styles.container}>
+          <Text>Please Enter A Username!</Text>
+          <TextInput
+            style={styles.textInput}
+            value={name}
+            onChangeText={setName}
+            placeholder="Type your username here"
+          />
+          {Platform.OS === "ios" ? (
+            <KeyboardAvoidingView behavior="padding" />
+          ) : null}
 
-        <Text>Please Select A Background Colour!</Text>
+          <Text>Please Select A Background Colour!</Text>
 
-        <ColorPicker
-          color={color}
-          onColorChange={(color) => onColorChange(color)}
-          // onColorChangeComplete={(color) => alert(`Color selected: ${color}`)}
-          thumbSize={30}
-          sliderSize={30}
-          noSnap={true}
-          row={false}
-        />
+          <ColorPicker
+            color={color}
+            onColorChange={(color) => onColorChange(color)}
+            // onColorChangeComplete={(color) => alert(`Color selected: ${color}`)}
+            thumbSize={30}
+            sliderSize={30}
+            noSnap={true}
+            row={false}
+          />
 
-        <TouchableOpacity style={styles.button} onPress={signInUser}>
-          <Text style={styles.buttonText}>Start Chatting!</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <TouchableOpacity style={styles.button} onPress={signInUser}>
+            <Text style={styles.buttonText}>Start Chatting!</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 
@@ -76,6 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "transparent",
   },
 
   textInput: {
@@ -94,6 +102,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     textAlign: "center",
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover", // or 'stretch'
   },
 });
 
