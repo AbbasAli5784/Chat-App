@@ -41,7 +41,7 @@ const Start = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../")}
+      source={require("/Users/abbasali/Chat/assets/background.png")}
       style={styles.backgroundImage}
     >
       <ScrollView>
